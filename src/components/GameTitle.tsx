@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
-import { PlayerContainer } from './PlayerContainer';
-import { Player, Suits, Ranks, Card } from '../interfaces/GameInterfaces';
-import { Deck } from '../classes/GameClasses';
 import './GameContainer.css';
 
 export interface GameContainerProperties {
-    title:String;
+    title:string;
 }
 
 export const GameTitle = (props:GameContainerProperties) => {

@@ -2,24 +2,21 @@ import React, { useState } from 'react';
 import { Card } from '../interfaces/GameInterfaces';
 
 export interface PlayerContainerProperties {
-    name: String;
+    name: string;
     hand: Card[];
-}
-
-const INITIAL_GAME_STATE = {
-    players: ["dealer", "player"],
-    deck: []
+    playerIndex:number;
 }
 
 export const PlayerContainer = (props:PlayerContainerProperties) => {
     const {
         name,
-        hand
+        hand,
+        playerIndex
     } = props
 
     return (
-    <div>
-        Player display goes here
+    <div className={`player-container player-${playerIndex}`}>
+        Player display goes here somewhere
         <div>Player Name: {name}</div>
         { }
     </div>

@@ -1,30 +1,25 @@
 import { Suits, Ranks } from '../interfaces/GameInterfaces';
 
 export class Player implements Player {
-    name: String;
+    name: string ='';
     hand: Card[];
-    isStanding: boolean;
+    isStanding: boolean = false;
 
-    constructor(name:String) {
+    constructor(name:string) {
         this.name = name;
         this.hand = [];
         this.isStanding = false;
     }
 
-    getName():String { return this.name};
-
+    getName():string { return this.name};
     getHand():Card[] { return this.hand}
-
-    getHandValue(): number {
-        return -1;
-    }
-
-    playStand():void {
+    getHandValue(): number {return -1}
+    hasStood():boolean {return this.isStanding}
+    takeStand():void {
         this.isStanding = true;
     }
-
-    playHit(deck:Deck): void {
-        this.hand.push(deck.draw());
+    takeHit(card:Card): void {
+        this.hand.push(card);
     }
     
 }
@@ -32,7 +27,7 @@ export class Player implements Player {
 export class Card implements Card {
     suit: Suits = Suits.spades;
     rank: Ranks = Ranks.Ace;
-    faceUp: boolean = false;
+    faceUp: boolean;
 
     constructor(suit:Suits, rank:Ranks) {
         this.suit = suit;
@@ -66,26 +61,39 @@ export const INITIAL_DECK_STATE = [DEFAULT_CARD];
 
 
 export class Deck implements Deck {
-    cards:Card[] = INITIAL_DECK_STATE
+    cards:Card[] = []
+    chanceToSwap:number = .75;
 
     init(): void {
         this.cards = []
-        let fullDeck:Card[];
         Object.values(Suits).forEach((suit) => {
-            console.log('suit: ', suit)
             Object.values(Ranks).forEach((rank) => {
-                console.log('rank: ', rank);
+                this.cards.push(new Card(suit, rank))
             })
         })
-
+        console.log(this.cards);
     }
 
-    draw():Card {
-        return DEFAULT_CARD;
+    draw():Card | undefined {
+        const card = this.cards.pop();
+        if (card) {
+        return card;
+        }
+        return undefined;
     }
    
     shuffle(): void {
         console.log('SHUFFLING!');
+        this.cards.forEach((card, index)=>{
+            let placeholder:Card;
+            if (Math.random() <= this.chanceToSwap){
+                placeholder = card;
+                const newCardIndex:number = Math.floor(Math.random() * this.cards.length);
+                this.cards[index] = this.cards[newCardIndex];
+                this.cards[newCardIndex] = placeholder;
+            }
+        })
+        console.log('Shuffled: ', this.cards);
     }
     cut(): void {
         console.log('CUT THE DECK');
@@ -93,6 +101,10 @@ export class Deck implements Deck {
 
     slipOut(suit:Suits, rank:number): void {
         console.log("Return a card")
+    }
+
+    getCards():Card[] {
+        return this.cards;
     }
 }
 

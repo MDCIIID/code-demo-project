@@ -13,7 +13,6 @@ function App() {
         />
         <GameContainer
           playerNames={["dealer", "player"]}
-          deck={[]}
          />
         <a
           className="App-link"
