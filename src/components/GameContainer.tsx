@@ -29,12 +29,6 @@ export const GameContainer = (props:GameContainerProperties) => {
         gameLoop();
     }, [gameState]);
 
-    const initGame = (): void => {
-
-        console.log('Initializing game state');
-        
-    }
-
     const startGame = () => {
         let players:Player[] = new PlayerRoster(playerNames).init();
         let gameDeck:Deck = Math.random() > .5 ? new SuperRandomDeck() : new Deck();
@@ -98,25 +92,27 @@ export const GameContainer = (props:GameContainerProperties) => {
         }
     }
     
+const renderPlayerContainers = () => {
+    return gameState.players.map((player, index) => {
+        console.log('making player: \nname: ', player, `\nplayer #:${index}`);
+        <PlayerContainer
+            name={player.getName()}
+            hand={player.getHand()}
+            playerIndex={index}
+            hit={() => {hitPlayerAtPosition(index)}}
+            stand={() => {standPlayerAtPosition(index)}}
+        />
+    })
+}
+
     //TODO: Deal with splitting hands?
 
     return (
     <div>
     <div className="main-div">
-        <>
-        {gameState.players.map((player, index) => {
-            console.log('making player: \nname: ', player, `\nplayer #:${index}`);
-            <PlayerContainer
-                name={player.getName()}
-                hand={player.getHand()}
-                playerIndex={index}
-                hit={() => {hitPlayerAtPosition(index)}}
-                stand={() => {standPlayerAtPosition(index)}}
-            />
-        })}
-        </>
+        {/*gameState.players && renderPlayerContainers()*/}
     </div>
-    {playerNames && <button className="start-button" onClick={() => {startGame();}}>START</button>}
+    {playerNames && <button className="start-button" onClick={() => {startGame()}}>START</button>}
     {gameState.inProgress && <button className="end-button" onClick={() => endGame()}>END</button>}
     {gameState.inProgress && <button className="reset-button" onClick={() => {resetGame()}}>RESET</button>}
     {debug && <div>
