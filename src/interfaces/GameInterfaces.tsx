@@ -5,6 +5,7 @@ export interface Card {
     getRank(): Ranks;
     getSuit(): Suits;
     isFaceUp(): boolean;
+    isAce():boolean;
 }
 
 

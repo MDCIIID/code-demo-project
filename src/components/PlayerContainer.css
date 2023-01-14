@@ -1,3 +1,11 @@
 .player-container {
   width: 100%;
 }
+
+.player-hit-button {
+  width: 100%;
+}
+
+.player-stand-button {
+  width: 100%;
+}

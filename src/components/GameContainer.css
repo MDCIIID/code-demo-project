@@ -23,6 +23,24 @@
     font-weight: 900;
 }
 
+.debug-button {
+    width: 150px;
+    font-size: 16px;
+    color: #444;
+    background-color: #FF0;
+    font-weight: 900;
+    margin: 5px 0px;
+}
+
+.debug-button:disabled {
+    width: 150px;
+    font-size: 16px;
+    color: #888;
+    background-color: #aaa;
+    font-weight: 900;
+    margin: 5px 0px;
+}
+
 .main-game-container {
     border-radius: 5px;
     border: 1px #ccc solid;
