@@ -1,0 +1,59 @@
+.start-button {
+    width: 200px;
+    font-size: 16px;
+    color: #222;
+    background-color: #7ea;
+    font-weight: 900;
+}
+
+.end-button {
+    width: 200px;
+    font-size: 16px;
+    color: #444;
+    background-color: #FF6868;
+    font-weight: 900;
+    margin: 0px 5px 20px 5px;
+}
+
+.reset-button {
+    width: 200px;
+    font-size: 16px;
+    color: #444;
+    background-color: #222;
+    font-weight: 900;
+}
+
+.main-game-container {
+    border-radius: 5px;
+    border: 1px #ccc solid;
+    width: 20%;
+    height: 20%;
+}
+
+.main-div {
+    border-radius: 10px;
+    border: 3px #ccc solid;
+    width: 1200px;
+    height: 900px;
+    background-color: #055005
+}
+
+.tiny-icon {
+    width: 30px;
+    height: 30px;
+}
+
+.title-letter {
+    width: 600px;
+    font-size: 40px;
+    color: #CCC;
+    stroke-dasharray: 1px;
+    font-weight: 1000;
+    display: inline;
+    margin: 0px 7px 10px 7px;
+    font-family: "Times New Roman";
+}
+
+.game-title {
+    margin: 8px;
+}
