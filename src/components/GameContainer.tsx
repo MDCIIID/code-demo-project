@@ -42,19 +42,20 @@ export const GameContainer = (props:GameContainerProperties) => {
         console.log('Starting game');
         gameDeck.shuffle();
         console.dir(gameDeck);
-        console.log('selected: ', selectedViewer);
+        console.log('selected: ', selectedViewer.getName());
 
         for (let i=0;i<2;i++) {
             players.forEach((player)=> {
                 console.log('player is selectedViewer: ', player===selectedViewer);
             const card = gameDeck.draw();
             if (card) {
-                if (player.getHand().length === 0) {
-                    player.takeHit(card);
-                } else if (player.getHand().length > 0) {
+                if (player.getHand().length === 0 && player === selectedViewer) {
+                    console.log(`${player.getName()} first card for viewer`);
                     card.flip();
                     player.takeHit(card);
-                } else if (player === selectedViewer) {
+                } else if (player.getHand().length === 0) {
+                    player.takeHit(card);
+                } else if (player.getHand().length > 0) {
                     card.flip();
                     player.takeHit(card);
                 }
