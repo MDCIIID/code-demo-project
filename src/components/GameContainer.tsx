@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { PlayerContainer } from './PlayerContainer';
-import { Deck, Player, Card, PlayerRoster, SuperRandomDeck} from '../classes/GameClasses';
+import { Deck, Player, Card, PlayerRoster, SuperRandomDeck, AllAcesDeck} from '../classes/GameClasses';
 import './GameContainer.css';
+import { RankData } from '../constants/Constants';
 
 export interface GameContainerProperties {
     playerNames: string[];
@@ -34,6 +35,7 @@ export const GameContainer = (props:GameContainerProperties) => {
         let players:Player[] = new PlayerRoster(playerNames).init();
         let gameDeck:Deck = Math.random() > .5 ? new SuperRandomDeck() : new Deck();
         let selectedViewer:string = playerNames[Math.floor(Math.random() * playerNames.length-1)]
+        console.log('selected: ', selectedViewer);
         gameDeck.init();
         console.log('Starting game');
         gameDeck.shuffle();
@@ -52,10 +54,9 @@ export const GameContainer = (props:GameContainerProperties) => {
                     card.flip();
                     player.takeHit(card);
                 }
-
-            }
-        })
+            }});
         }
+        console.log('game state before change: ', {gameDeck, players, selectedViewer});
         setGameState({...gameState, inProgress: true, deck: gameDeck, players: players, viewer: selectedViewer})
     }
 
@@ -110,19 +111,17 @@ export const GameContainer = (props:GameContainerProperties) => {
     }
 
     const calculateHand = (hand:Card[]):void => {
-        console.log("calculating a hand: ", hand);
         let handValue = 0;
-        let acesInHand:Card[] = hand.filter((card)=>{return card.isAce()})
+        let aceInHand:Card[] = hand.filter((card)=>{return card.isAce()})
 
         hand.forEach((card)=>{
-            const cardValue = parseInt(card.getRank()) > 10 ? 10 : parseInt(card.getRank());
+            const cardValue = RankData[card.getRank()].value > 10 ? 10 : RankData[card.getRank()].value;
             handValue += cardValue;
         })
 
-        if (acesInHand.length) {
-            handValue -= acesInHand.length*10;
+        if (aceInHand && handValue < 21) {
+            handValue += aceInHand.length*10;
         }
-        console.log("calculated hand: ", handValue)
     }
 
     const gameLoop = () => {
@@ -141,7 +140,8 @@ const renderPlayerContainers = () => {
             index={index}
             hit={() => {hitPlayerAtPosition(index)}}
             stand={() => {standPlayerAtPosition(index)}}
-            calculateHand={() => {calculateHand(player.getHand())}}
+            calculateHand={() => {player.getHandValue()}}
+            isSelected={isViewer(player)}
         />
     })
 }
@@ -165,7 +165,7 @@ const renderPlayerContainers = () => {
     <div>
     <button className="debug-button" onClick={() => hitPlayerAtPosition(0)}>hitDealer</button>
     <button className="debug-button" onClick={() => standPlayerAtPosition(0)}>standDealer</button>
-    <button className="debug-button" onClick={() => calculateHand(gameState.players[0].getHand())}>D.Hand</button>
+    <button className="debug-button" onClick={() => gameState.players[0].getHandValue()}>D.Hand</button>
     </div>}
     {debug &&
     <div>

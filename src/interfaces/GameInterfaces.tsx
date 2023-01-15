@@ -4,7 +4,7 @@ export interface Card {
     suit: Suits;
     rank: Ranks;
     faceUp: boolean;
-    getRank(): Ranks;
+    getRank(): typeof Ranks;
     getSuit(): Suits;
     isFaceUp(): boolean;
     isAce():boolean;

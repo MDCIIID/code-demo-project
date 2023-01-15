@@ -8,7 +8,8 @@ export interface PlayerContainerProperties {
     index:number;
     hit():void;
     stand():void;
-    calculateHand(hand:Card[]):void;
+    calculateHand():void;
+    isSelected:boolean;
 }
 
 export const PlayerContainer = (props:PlayerContainerProperties) => {
@@ -18,7 +19,8 @@ export const PlayerContainer = (props:PlayerContainerProperties) => {
         index,
         hit,
         stand,
-        calculateHand
+        calculateHand,
+        isSelected
     } = props
 
     return (
@@ -29,11 +31,15 @@ export const PlayerContainer = (props:PlayerContainerProperties) => {
                 hand={player.getHand()}
             />
             <br />
-            { !player.hasStood()
-               && !player.isBust()
-               && <button className="hit-button" onClick={() => hit()}>Hit</button>}
-            { !player.isBust() && <button className="stand-button" onClick={() => stand()}>{player.hasStood() ? `${player.getName()} is standing on ${player.getHandValue()}` : "Stand"} </button>}
-            { player.isBust() && <div>{`${player.getName()} has gone bust!`}</div>}
+            {  isSelected
+                && ( !player.hasStood()
+                && !player.isBust()
+                && !player.hasBlackjack()
+                && <button className="hit-button" onClick={() => hit()}>Hit</button>)}
+            { isSelected 
+                && (!player.isBust() && <button className="stand-button" onClick={() => stand()}>{player.hasStood() ? `${player.getName()} is standing on ${player.getHandValue()}` : "Stand"} </button>)}
+            { isSelected
+                && (player.isBust() && <div>{`${player.getName()} has gone bust!`}</div>)}
         </div>
     </div>
     );

@@ -1,4 +1,4 @@
-import { SuitIcons, RanksToValues, Ranks, RoyalsToLetters } from '../constants/Constants';
+import { SuitIcons, RanksToValues, Ranks, RankData } from '../constants/Constants';
 import { Card } from '../classes/GameClasses';
 import './CardComponent.css';
 import CardBack from '../resources/card back blue 25 percent.png';
@@ -14,9 +14,9 @@ export const CardComponent = (props:CardComponentProperties) => {
     const { suit, rank } = card;
 
     const showRank = (rank:Ranks) => {
-        console.log('show rank')
+        //console.log('show rank')
         if (RanksToValues[rank] > 10 || RanksToValues[rank] === 1) {
-            return RoyalsToLetters[rank];
+            return RankData[rank].Letter;
         }
         return RanksToValues[rank];
     }

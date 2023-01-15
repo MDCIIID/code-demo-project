@@ -48,18 +48,18 @@ export enum RanksToValues {
     "King"  = 13
 }
 
-export enum RoyalsToLetters {
-    "Ace"   = "A",
-    "Jack"  = "J",
-    "Queen" = "Q",
-    "King"  = "K",
-    "Two" = '',
-    "Three" = '',
-    "Four" = '',
-    "Five" = '',
-    "Six" = '',
-    "Seven" = '',
-    "Eight" = '',
-    "Nine" = '',
-    "Ten" = ''
+export const RankData = {
+    [Ranks.Ace] :   {value: 1, Letter: "A"},
+    [Ranks.Two] :   {value: 2, Letter: undefined},
+    [Ranks.Three] : {value: 3, Letter: undefined},
+    [Ranks.Four] :  {value: 4, Letter: undefined},
+    [Ranks.Five] :  {value: 5, Letter: undefined},
+    [Ranks.Six] :   {value: 6, Letter: undefined},
+    [Ranks.Seven] : {value: 7, Letter: undefined},
+    [Ranks.Eight] : {value: 8, Letter: undefined},
+    [Ranks.Nine] :  {value: 9, Letter: undefined},
+    [Ranks.Ten] :   {value: 10, Letter: undefined},
+    [Ranks.Jack] :  {value: 11, Letter: "J"},
+    [Ranks.Queen] : {value: 12, Letter: "Q"},
+    [Ranks.King] :  {value: 13, Letter: "K"}
 }

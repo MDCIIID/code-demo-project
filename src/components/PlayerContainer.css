@@ -12,7 +12,8 @@
 }
 
 .stand-button {
-  width: 50px;
+  min-width: 50px;
+  max-width:200px;
   height: 30px;
   margin: 5px 5px;
 }

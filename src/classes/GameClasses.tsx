@@ -1,9 +1,11 @@
-import { Suits, Ranks } from '../constants/Constants';
+import { Suits, Ranks, RankData } from '../constants/Constants';
 
 export class Player implements Player {
     name: string ='';
     hand: Card[];
     isStanding: boolean = false;
+    blackjack: boolean = false;
+    wentBust: boolean = false;
 
     constructor(name:string) {
         this.name = name;
@@ -16,12 +18,41 @@ export class Player implements Player {
     getHandValue(): number {
         console.log(`${this.name} calculating hand`);
         let handValue = 0;
-        let aceInHand:boolean = this.hand.some((card)=>{return card.isAce()})
+        let aceInHand:Card[] = this.hand.filter((card)=>{return card.isAce()})
 
-        this.hand.forEach((card)=>{
-            const cardValue = parseInt(card.getRank()) > 10 ? 10 : parseInt(card.getRank());
+        this.hand.forEach((card, index)=>{
+            console.log(`${this.name}'s #${index} card: `, card);
+            if (!card.isAce()) {
+                console.log(`\tcard not an ace: `, card);
+            const cardValue = RankData[card.getRank()].value > 10 ? 10 : RankData[card.getRank()].value;
             handValue += cardValue;
+            }
         })
+        console.log('\tpost for loop: ', handValue);
+
+        if (aceInHand.length) {
+            console.log('aceInHand.length: ', aceInHand.length, '\n', aceInHand)
+            const calculatedValue:number = ((aceInHand.length)*11)
+            const calculatedAltValue:number = ((aceInHand.length)*1); 
+            
+            if (handValue + calculatedValue > 21 && handValue + calculatedAltValue > 21) {
+                handValue = handValue + calculatedAltValue;
+            } else if (handValue + calculatedValue <= 21) {
+                handValue = handValue + calculatedValue;
+            } else if (handValue + calculatedAltValue <= 21) {
+                handValue = handValue + calculatedAltValue;
+            }
+        }
+
+        if (handValue === 21) {
+            this.blackjack = true;
+        }
+
+        if (handValue > 21) {
+            this.wentBust = true;
+        }
+
+        console.log('\thand: ', handValue);
         return handValue;
     }
     hasStood():boolean {return this.isStanding}
@@ -30,12 +61,13 @@ export class Player implements Player {
         this.isStanding = true;
     }
     takeHit(card:Card): void {
-        console.log("Hit me!");
+        //console.log("Hit me!");
         this.hand.push(card);
     }
     isDealer():boolean {return this.name.toLocaleLowerCase() === 'dealer'}
 
     isBust():boolean { return this.getHandValue() > 21}
+    hasBlackjack():boolean { return this.blackjack }
 }
 
 export class PlayerRoster {
@@ -69,7 +101,7 @@ export class Card implements Card {
 
     getSuit(): Suits { return this.suit}
 
-    flip(): void { this.faceUp = !this.faceUp }
+    flip(): void { this.faceUp = true }
 
     isFaceUp(): boolean { return this.faceUp; }
 
@@ -95,7 +127,7 @@ export const DEFAULT_CARD = {
 
 export const INITIAL_DECK_STATE = [DEFAULT_CARD];
 
-
+//The basic deck with some chance to shuffle
 export class Deck implements Deck {
     cards:Card[] = []
     chanceToSwap:number = .35;
@@ -158,7 +190,16 @@ export class Deck implements Deck {
     }
 }
 
+//Just an extra random deck for shuffling
 export class SuperRandomDeck extends Deck {
     chanceToSwap:number = .99;
 }
 
+//Debug deck to check ace value calculation
+export class AllAcesDeck extends Deck {
+    init(): void {
+        console.log()
+        this.cards = new Array(52);
+        this.cards.fill(new Card(Suits.spades, Ranks.Ace));
+    }
+}
