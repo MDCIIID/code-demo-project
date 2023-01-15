@@ -1,0 +1,24 @@
+.card-component {
+    width: 5vmax;
+    height: 7vmax;
+    font-size: 22px;
+    color: #333;
+    background-color: #eee;
+    font-weight: 900;
+    border: 2px #222 solid;
+    border-radius: 5px;
+    display: inline-block;
+    margin: 0px 2px 0px 2px;
+}
+
+.card-back {
+    width: 5vmax;
+    height: 7vmax;
+    border-radius: 5px;
+}
+
+.card-front {
+    width: 6vmax;
+    height: 9vmax;
+    border-radius: 5px;
+}

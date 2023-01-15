@@ -1,29 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { PlayerContainer } from './PlayerContainer';
 import { Deck, Player, Card, PlayerRoster, SuperRandomDeck} from '../classes/GameClasses';
-import { CONSTANTS, Ranks } from '../constants/constants';
 import './GameContainer.css';
 
 export interface GameContainerProperties {
-    playerNames: ["Dealer", "Eric", "Cheryl"]
+    playerNames: string[];
 }
 
 export interface GameContainerState {
     players: Player[],
     deck: Card[],
     gameIsOver: boolean,
+    viewer: string
 }
 
 const INITIAL_GAME_STATE = {
     players: new Array<Player>(),
     deck: new Deck(),
-    inProgress: false
+    inProgress: false,
+    viewer: ""
 }
 
 export const GameContainer = (props:GameContainerProperties) => {
     const [gameState, setGameState] = useState(INITIAL_GAME_STATE);
     const debug = true;
-    const {playerNames } = props;
+    const {playerNames} = props;
 
     useEffect(()=>{
         gameLoop();
@@ -32,6 +33,7 @@ export const GameContainer = (props:GameContainerProperties) => {
     const startGame = () => {
         let players:Player[] = new PlayerRoster(playerNames).init();
         let gameDeck:Deck = Math.random() > .5 ? new SuperRandomDeck() : new Deck();
+        let selectedViewer:string = playerNames[Math.floor(Math.random() * playerNames.length-1)]
         gameDeck.init();
         console.log('Starting game');
         gameDeck.shuffle();
@@ -41,11 +43,20 @@ export const GameContainer = (props:GameContainerProperties) => {
             players.forEach((player)=> {
             const card = gameDeck.draw();
             if (card) {
-            player.takeHit(card)
+                if (player.getHand().length === 0) {
+                    player.takeHit(card);
+                } else if (player.getHand().length > 0) {
+                    card.flip();
+                    player.takeHit(card);
+                } else if (isViewer(player)) {
+                    card.flip();
+                    player.takeHit(card);
+                }
+
             }
         })
         }
-        setGameState({...gameState, inProgress: true, deck: gameDeck, players: players})
+        setGameState({...gameState, inProgress: true, deck: gameDeck, players: players, viewer: selectedViewer})
     }
 
     const endGame = (): void => {
@@ -57,13 +68,19 @@ export const GameContainer = (props:GameContainerProperties) => {
         startGame();
     }
 
+    const isViewer = (player:Player): boolean => {
+        return player.getName().toLowerCase() === gameState.viewer;
+    }
+
     const hitPlayerAtPosition = (position:number):void => {
-        let newPlayersState: Player[] = Object.assign([], gameState.players)
+        let newPlayersState:Player[] = Object.assign([], gameState.players)
         let newDeckState:Deck = gameState.deck;
-        console.log('hitting player at position');
-        if (playerPositionIsValid(position)) {
+        console.log(`hitting player at position ${position}`);
+
+        if (playerPositionIsValid(position) && playerNotBusted(newPlayersState[position])) {
             const drawnCard = newDeckState.draw();
             if (drawnCard) {
+                drawnCard.flip();
                 newPlayersState[position].takeHit(drawnCard);
                 setGameState({...gameState, deck: newDeckState, players: newPlayersState})
             }
@@ -76,7 +93,8 @@ export const GameContainer = (props:GameContainerProperties) => {
         let newPlayersState: Player[] = Object.assign([], gameState.players)
 
         if (playerPositionIsValid(position)) {
-
+            newPlayersState[position].takeStand();
+            setGameState({...gameState, players: newPlayersState})
         } else {
             throw new Error("Invalid player position, cannot stand");
         }
@@ -87,16 +105,24 @@ export const GameContainer = (props:GameContainerProperties) => {
         return gameState.players[position] !== undefined;
     }
 
+    const playerNotBusted = (player:Player):boolean => {
+        return player.getHandValue() <= 21;
+    }
+
     const calculateHand = (hand:Card[]):void => {
-        console.log("calculating a hand");
+        console.log("calculating a hand: ", hand);
         let handValue = 0;
-        let aceInHand:boolean = hand.some((card)=>{return card.isAce()})
+        let acesInHand:Card[] = hand.filter((card)=>{return card.isAce()})
 
         hand.forEach((card)=>{
             const cardValue = parseInt(card.getRank()) > 10 ? 10 : parseInt(card.getRank());
             handValue += cardValue;
         })
-        console.log('handValue: ', handValue);
+
+        if (acesInHand.length) {
+            handValue -= acesInHand.length*10;
+        }
+        console.log("calculated hand: ", handValue)
     }
 
     const gameLoop = () => {
@@ -115,6 +141,7 @@ const renderPlayerContainers = () => {
             index={index}
             hit={() => {hitPlayerAtPosition(index)}}
             stand={() => {standPlayerAtPosition(index)}}
+            calculateHand={() => {calculateHand(player.getHand())}}
         />
     })
 }

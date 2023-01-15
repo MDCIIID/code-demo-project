@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { Ranks, Suits } from '../constants/constants';
+import { SuitIcons, RanksToValues, Ranks, RoyalsToLetters } from '../constants/Constants';
 import { Card } from '../classes/GameClasses';
+import './CardComponent.css';
+import CardBack from '../resources/card back blue 25 percent.png';
 
 export interface CardComponentProperties {
     card:Card
@@ -8,14 +9,30 @@ export interface CardComponentProperties {
 
 export const CardComponent = (props:CardComponentProperties) => {
     const {
-        suit,
-        rank
-    } = props.card
+        card
+    } = props;
+    const { suit, rank } = card;
+
+    const showRank = (rank:Ranks) => {
+        console.log('show rank')
+        if (RanksToValues[rank] > 10 || RanksToValues[rank] === 1) {
+            return RoyalsToLetters[rank];
+        }
+        return RanksToValues[rank];
+    }
 
     return (
         <div className="card-component">
-            {suit}
-            {rank}
+            {card.isFaceUp() && 
+            <div className="card-front">
+                {SuitIcons[suit]}
+                {showRank(rank)}
+            </div>}
+            {!card.isFaceUp() &&
+            <div>
+                <img className="card-back" src={CardBack} />
+            </div>
+            }
         </div>
     );
 }

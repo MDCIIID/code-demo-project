@@ -55,8 +55,8 @@
     width: 1200px;
     height: 900px;
     background-color: #055005;
-    display: inline-block;
     align-content: center;
+    overflow-y: auto;
 }
 
 .tiny-icon {

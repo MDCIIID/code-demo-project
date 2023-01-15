@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { Card } from '../interfaces/GameInterfaces';
 import { Player } from '../classes/GameClasses';
 import { PlayerHand } from './PlayerHand';
@@ -9,6 +8,7 @@ export interface PlayerContainerProperties {
     index:number;
     hit():void;
     stand():void;
+    calculateHand(hand:Card[]):void;
 }
 
 export const PlayerContainer = (props:PlayerContainerProperties) => {
@@ -17,7 +17,8 @@ export const PlayerContainer = (props:PlayerContainerProperties) => {
         player,
         index,
         hit,
-        stand
+        stand,
+        calculateHand
     } = props
 
     return (
@@ -27,8 +28,12 @@ export const PlayerContainer = (props:PlayerContainerProperties) => {
             <PlayerHand 
                 hand={player.getHand()}
             />
-        <button className="player-hit-button" disabled={player.hasStood()} onClick={() => hit()}>Hit</button>
-        <button className="player-stand-button" onClick={() => stand()}>Stand</button>
+            <br />
+            { !player.hasStood()
+               && !player.isBust()
+               && <button className="hit-button" onClick={() => hit()}>Hit</button>}
+            { !player.isBust() && <button className="stand-button" onClick={() => stand()}>{player.hasStood() ? `${player.getName()} is standing on ${player.getHandValue()}` : "Stand"} </button>}
+            { player.isBust() && <div>{`${player.getName()} has gone bust!`}</div>}
         </div>
     </div>
     );

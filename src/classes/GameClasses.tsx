@@ -1,4 +1,4 @@
-import { Suits, Ranks } from '../constants/constants';
+import { Suits, Ranks } from '../constants/Constants';
 
 export class Player implements Player {
     name: string ='';
@@ -13,7 +13,17 @@ export class Player implements Player {
 
     getName():string { return this.name};
     getHand():Card[] { return this.hand}
-    getHandValue(): number {return -1}
+    getHandValue(): number {
+        console.log(`${this.name} calculating hand`);
+        let handValue = 0;
+        let aceInHand:boolean = this.hand.some((card)=>{return card.isAce()})
+
+        this.hand.forEach((card)=>{
+            const cardValue = parseInt(card.getRank()) > 10 ? 10 : parseInt(card.getRank());
+            handValue += cardValue;
+        })
+        return handValue;
+    }
     hasStood():boolean {return this.isStanding}
     takeStand():void {
         console.log("I'm Standing!")
@@ -24,6 +34,8 @@ export class Player implements Player {
         this.hand.push(card);
     }
     isDealer():boolean {return this.name.toLocaleLowerCase() === 'dealer'}
+
+    isBust():boolean { return this.getHandValue() > 21}
 }
 
 export class PlayerRoster {
@@ -56,6 +68,8 @@ export class Card implements Card {
     getRank(): Ranks { return this.rank}
 
     getSuit(): Suits { return this.suit}
+
+    flip(): void { this.faceUp = !this.faceUp }
 
     isFaceUp(): boolean { return this.faceUp; }
 

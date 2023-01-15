@@ -1,4 +1,4 @@
-import { Suits, Ranks } from "../constants/constants"
+import { Suits, Ranks } from "../constants/Constants"
 
 export interface Card {
     suit: Suits;
