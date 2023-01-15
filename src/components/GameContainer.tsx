@@ -12,14 +12,14 @@ export interface GameContainerState {
     players: Player[],
     deck: Card[],
     gameIsOver: boolean,
-    viewer: string
+    viewer: Player
 }
 
 const INITIAL_GAME_STATE = {
     players: new Array<Player>(),
     deck: new Deck(),
     inProgress: false,
-    viewer: ""
+    viewer: new Player("Default")
 }
 
 export const GameContainer = (props:GameContainerProperties) => {
@@ -34,7 +34,7 @@ export const GameContainer = (props:GameContainerProperties) => {
     const startGame = () => {
         let players:Player[] = new PlayerRoster(playerNames).init();
         let gameDeck:Deck = Math.random() > .5 ? new SuperRandomDeck() : new Deck();
-        let selectedViewer:string = playerNames[Math.floor(Math.random() * playerNames.length-1)]
+        let selectedViewer:Player = players[Math.floor(Math.random() * playerNames.length-1)]
         console.log('selected: ', selectedViewer);
         gameDeck.init();
         console.log('Starting game');
@@ -70,7 +70,7 @@ export const GameContainer = (props:GameContainerProperties) => {
     }
 
     const isViewer = (player:Player): boolean => {
-        return player.getName().toLowerCase() === gameState.viewer;
+        return player === gameState.viewer;
     }
 
     const hitPlayerAtPosition = (position:number):void => {
@@ -134,7 +134,7 @@ export const GameContainer = (props:GameContainerProperties) => {
     
 const renderPlayerContainers = () => {
     return gameState.players.map((player, index) => {
-        console.log('making player: \nname: ', player, `\nplayer #:${index}`);
+        //console.log('making player: \nname: ', player, `\nplayer #:${index}`);
         return <PlayerContainer
             player={player}
             index={index}
