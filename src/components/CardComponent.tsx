@@ -16,17 +16,20 @@ export const CardComponent = (props:CardComponentProperties) => {
     const showRank = (rank:Ranks) => {
         //console.log('show rank')
         if (RanksToValues[rank] > 10 || RanksToValues[rank] === 1) {
-            return RankData[rank].Letter;
+            return RankData[rank].letter;
         }
         return RanksToValues[rank];
     }
 
     return (
-        <div className="card-component">
+        <div
+            className="card-component"
+            data-testid="cardComponent"
+            >
             {card.isFaceUp() && 
             <div className="card-front">
-                {SuitIcons[suit]}
-                {showRank(rank)}
+                <span data-testid="suit-span">{SuitIcons[suit]}</span>
+                <span data-testid="rank-span">{showRank(rank)}</span>
             </div>}
             {!card.isFaceUp() &&
             <div>

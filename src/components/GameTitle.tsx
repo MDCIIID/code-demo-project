@@ -10,8 +10,8 @@ export const GameTitle = (props:GameContainerProperties) => {
 
     return (
     <div className="game-title">
-        {Array.from(props.title).map((letter)=>{
-            return <div className="title-letter">{letter}</div>
+        {Array.from(props.title).map((letter, index)=>{
+            return <div className="title-letter" key={`${letter+index}`}>{letter}</div>
         })}
     </div>);
 }

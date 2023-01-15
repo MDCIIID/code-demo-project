@@ -110,20 +110,7 @@ export class Card implements Card {
     toString(): string { return "card string:" + this.getRank() + this.getSuit()}
 }
 
-export const DEFAULT_CARD = {
-        suit:Suits.spades,
-        rank:Ranks.Ace,
-        faceUp:false,
-        getRank() {
-            return Ranks.Ace
-        },
-        getSuit() {
-            return Suits.spades
-        },
-        isFaceUp() {
-            return false;
-        }
-    };
+export const DEFAULT_CARD = new Card(Suits.spades, Ranks.Ace);
 
 export const INITIAL_DECK_STATE = [DEFAULT_CARD];
 
