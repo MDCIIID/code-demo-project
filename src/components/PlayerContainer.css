@@ -1,11 +1,14 @@
 .player-container {
-  width: 100%;
+  width: 97%;
+  border: 1px #373 solid;
+  border-radius: 10px;
+  margin: 10px;
 }
 
 .player-hit-button {
-  width: 100%;
+  width: 25%;
 }
 
 .player-stand-button {
-  width: 100%;
+  width: 25%;
 }

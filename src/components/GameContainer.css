@@ -46,6 +46,7 @@
     border: 1px #ccc solid;
     width: 20%;
     height: 20%;
+    
 }
 
 .main-div {
@@ -53,7 +54,9 @@
     border: 3px #ccc solid;
     width: 1200px;
     height: 900px;
-    background-color: #055005
+    background-color: #055005;
+    display: inline-block;
+    align-content: center;
 }
 
 .tiny-icon {

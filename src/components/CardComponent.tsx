@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Ranks, Suits } from '../interfaces/GameInterfaces';
+import { Ranks, Suits } from '../constants/constants';
 import { Card } from '../classes/GameClasses';
 
 export interface CardComponentProperties {

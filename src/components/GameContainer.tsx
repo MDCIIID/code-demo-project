@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { PlayerContainer } from './PlayerContainer';
-import { Deck, Player, Card, PlayerRoster, SuperRandomDeck } from '../classes/GameClasses';
+import { Deck, Player, Card, PlayerRoster, SuperRandomDeck} from '../classes/GameClasses';
+import { CONSTANTS, Ranks } from '../constants/constants';
 import './GameContainer.css';
-import { Ranks } from '../interfaces/GameInterfaces';
 
 export interface GameContainerProperties {
-    playerNames: ["dealer", "player"]
+    playerNames: ["Dealer", "Eric", "Cheryl"]
 }
 
 export interface GameContainerState {
@@ -58,18 +58,33 @@ export const GameContainer = (props:GameContainerProperties) => {
     }
 
     const hitPlayerAtPosition = (position:number):void => {
-        const {players, deck} = gameState;
-        const playerToHit = players[position];
-        const card = deck.draw();
-        if (card) {
-            playerToHit.takeHit(card);
+        let newPlayersState: Player[] = Object.assign([], gameState.players)
+        let newDeckState:Deck = gameState.deck;
+        console.log('hitting player at position');
+        if (playerPositionIsValid(position)) {
+            const drawnCard = newDeckState.draw();
+            if (drawnCard) {
+                newPlayersState[position].takeHit(drawnCard);
+                setGameState({...gameState, deck: newDeckState, players: newPlayersState})
+            }
         } else {
-            console.log()
+            throw new Error("Invalid player position, cannot hit");
         }
     }
+
     const standPlayerAtPosition = (position:number):void => {
-        const player = gameState.players[position];
-        player.takeStand();
+        let newPlayersState: Player[] = Object.assign([], gameState.players)
+
+        if (playerPositionIsValid(position)) {
+
+        } else {
+            throw new Error("Invalid player position, cannot stand");
+        }
+
+    }
+
+    const playerPositionIsValid = (position:number):boolean => {
+        return gameState.players[position] !== undefined;
     }
 
     const calculateHand = (hand:Card[]):void => {
@@ -95,10 +110,9 @@ export const GameContainer = (props:GameContainerProperties) => {
 const renderPlayerContainers = () => {
     return gameState.players.map((player, index) => {
         console.log('making player: \nname: ', player, `\nplayer #:${index}`);
-        <PlayerContainer
-            name={player.getName()}
-            hand={player.getHand()}
-            playerIndex={index}
+        return <PlayerContainer
+            player={player}
+            index={index}
             hit={() => {hitPlayerAtPosition(index)}}
             stand={() => {standPlayerAtPosition(index)}}
         />
@@ -110,7 +124,7 @@ const renderPlayerContainers = () => {
     return (
     <div>
     <div className="main-div">
-        {/*gameState.players && renderPlayerContainers()*/}
+        {gameState.players && renderPlayerContainers()}
     </div>
     {playerNames && <button className="start-button" onClick={() => {startGame()}}>START</button>}
     {gameState.inProgress && <button className="end-button" onClick={() => endGame()}>END</button>}

@@ -1,4 +1,4 @@
-import { Suits, Ranks } from '../interfaces/GameInterfaces';
+import { Suits, Ranks } from '../constants/constants';
 
 export class Player implements Player {
     name: string ='';
@@ -98,13 +98,12 @@ export class Deck implements Deck {
     }
 
     draw():Card | undefined {
-        const card = this.cards.shift();
-        if (card) {
-        return card;
+        if (this.cards.length > 0) {
+            return this.cards.shift();
+        } else {
+            return undefined;
         }
-        return undefined;
     }
-
 
    
     shuffle(): void {
