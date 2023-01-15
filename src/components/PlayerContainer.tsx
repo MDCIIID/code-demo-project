@@ -13,7 +13,7 @@ export interface PlayerContainerProperties {
 }
 
 export const PlayerContainer = (props:PlayerContainerProperties) => {
-    console.log('playerContainer props: ', props);
+    //console.log('playerContainer props: ', props);
     const {
         player,
         index,

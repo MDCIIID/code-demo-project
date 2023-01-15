@@ -16,22 +16,22 @@ export class Player implements Player {
     getName():string { return this.name};
     getHand():Card[] { return this.hand}
     getHandValue(): number {
-        console.log(`${this.name} calculating hand`);
+        //console.log(`${this.name} calculating hand`);
         let handValue = 0;
         let aceInHand:Card[] = this.hand.filter((card)=>{return card.isAce()})
 
         this.hand.forEach((card, index)=>{
-            console.log(`${this.name}'s #${index} card: `, card);
+            //console.log(`${this.name}'s #${index} card: `, card);
             if (!card.isAce()) {
-                console.log(`\tcard not an ace: `, card);
+                //console.log(`\tcard not an ace: `, card);
             const cardValue = RankData[card.getRank()].value > 10 ? 10 : RankData[card.getRank()].value;
             handValue += cardValue;
             }
         })
-        console.log('\tpost for loop: ', handValue);
+        //console.log('\tpost for loop: ', handValue);
 
         if (aceInHand.length) {
-            console.log('aceInHand.length: ', aceInHand.length, '\n', aceInHand)
+            //console.log('aceInHand.length: ', aceInHand.length, '\n', aceInHand)
             const calculatedValue:number = ((aceInHand.length)*11)
             const calculatedAltValue:number = ((aceInHand.length)*1); 
             
@@ -52,7 +52,7 @@ export class Player implements Player {
             this.wentBust = true;
         }
 
-        console.log('\thand: ', handValue);
+        //console.log('\thand: ', handValue);
         return handValue;
     }
     hasStood():boolean {return this.isStanding}
@@ -101,7 +101,7 @@ export class Card implements Card {
 
     getSuit(): Suits { return this.suit}
 
-    flip(): void { this.faceUp = true }
+    flip(): void { this.faceUp = !this.faceUp }
 
     isFaceUp(): boolean { return this.faceUp; }
 

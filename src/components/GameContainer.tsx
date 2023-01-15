@@ -34,15 +34,19 @@ export const GameContainer = (props:GameContainerProperties) => {
     const startGame = () => {
         let players:Player[] = new PlayerRoster(playerNames).init();
         let gameDeck:Deck = Math.random() > .5 ? new SuperRandomDeck() : new Deck();
-        let selectedViewer:Player = players[Math.floor(Math.random() * playerNames.length-1)]
-        console.log('selected: ', selectedViewer);
+        const selectionIndex:number = Math.floor(Math.random() * playerNames.length);
+        let selectedViewer:Player = players[selectionIndex];
+        console.log('selection index: ', selectionIndex);
+        
         gameDeck.init();
         console.log('Starting game');
         gameDeck.shuffle();
         console.dir(gameDeck);
+        console.log('selected: ', selectedViewer);
 
         for (let i=0;i<2;i++) {
             players.forEach((player)=> {
+                console.log('player is selectedViewer: ', player===selectedViewer);
             const card = gameDeck.draw();
             if (card) {
                 if (player.getHand().length === 0) {
@@ -50,7 +54,7 @@ export const GameContainer = (props:GameContainerProperties) => {
                 } else if (player.getHand().length > 0) {
                     card.flip();
                     player.takeHit(card);
-                } else if (isViewer(player)) {
+                } else if (player === selectedViewer) {
                     card.flip();
                     player.takeHit(card);
                 }
