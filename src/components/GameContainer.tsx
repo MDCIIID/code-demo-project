@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { PlayerContainer } from './PlayerContainer';
-import { Deck, Player, Card, PlayerRoster, SuperRandomDeck, AllAcesDeck, PlayerActor} from '../classes/GameClasses';
+import { Deck, Player, Card, PlayerRoster, SuperRandomDeck, AllAcesDeck, PlayerActor, Dealer} from '../classes/GameClasses';
 import './GameContainer.css';
 import { RankData } from '../constants/Constants';
 import { getActiveElement } from '@testing-library/user-event/dist/utils';
@@ -168,7 +168,10 @@ export const GameContainer = (props:GameContainerProperties) => {
                 } else {
                     console.log("running through play order");
                     if (playersInPlay && inProgress && !gameIsOver) {
-                        const presentPlayer:PlayerActor = new PlayerActor(newPlayerState, deck);
+                        let presentPlayer:PlayerActor;
+                        presentPlayer = newPlayerState.getName().toLowerCase() === 'dealer' ?
+                            new PlayerActor(newPlayerState, deck)
+                            : new Dealer(newPlayerState, deck);
                         if (newPlayerState.isBust()) {
                             continue;
                         }

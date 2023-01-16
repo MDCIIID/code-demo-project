@@ -4,7 +4,11 @@ When the page loads, clicking start will initiate a game and randomly select an 
 
 * Other players will have their hands controlled by a `PlayerActor` that will determine when to hit or stand.
     * One stretch goal was to allow the players to adjust their hit threshold based on visible cards in play. Currently not implemented.
-* The dealer hand will be controlled by a `Dealer`, which is a `PlayerActor`.
+* The dealer hand will be controlled by a `Dealer`, which is a `PlayerActor` which will have an unchanging set of action thresholds.
+
+* While relatively new to `TypeScript` I attempted to make as much use as I could of interfaces and typing to ensure the type safety to facilitate  
+
+
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
