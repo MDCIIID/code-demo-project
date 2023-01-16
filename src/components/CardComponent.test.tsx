@@ -6,14 +6,14 @@ import { Suits, Ranks, SuitIcons, RankData } from '../constants/Constants';
 
 describe('CardComponent', () => {
     //Given
-    let testCard:Card = DEFAULT_CARD;
+    let testCard = new Card(Suits.spades, Ranks.Ace);
 
     beforeEach(() => {
         init();
     });
 
     const init = () => {
-        render(<CardComponent card={DEFAULT_CARD}/>);
+        render(<CardComponent card={testCard}/>);
     }
 
     test('renders face down card by default', () => {

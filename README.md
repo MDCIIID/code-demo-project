@@ -11,6 +11,7 @@ When the page loads, clicking start will initiate a game and randomly select an 
    * In hindsight I could have had a more completed project doing so, and made small tweaks, but I felt this was a better learning opportunity to work on improving with typescript.  
 * There are multiple debugging buttons in the interface which can be toggled to show by setting the debug value to true in `GameContainer`.
 * Console logs are still in place as I am working on a re-render bug.
+* Testing is presently failing due to a double render of a component, focused on completing logic and game loop.
 
 
 
