@@ -33,6 +33,7 @@ export const GameContainer = (props:GameContainerProperties) => {
 
     const startGame = () => {
         let players:Player[] = new PlayerRoster(playerNames).init();
+        players.push(new Player("Dealer"));
         let gameDeck:Deck = Math.random() > .5 ? new SuperRandomDeck() : new Deck();
         const selectionIndex:number = Math.floor(Math.random() * playerNames.length);
         let selectedViewer:Player = players[selectionIndex];

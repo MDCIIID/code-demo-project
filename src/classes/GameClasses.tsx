@@ -6,15 +6,15 @@ export class Player implements Player {
     isStanding: boolean = false;
     blackjack: boolean = false;
     wentBust: boolean = false;
-
+    getName: Function;
     constructor(name:string) {
         this.name = name;
         this.hand = [];
         this.isStanding = false;
+        this.getName = () => { return this.name; };
     }
 
-    getName():string { return this.name};
-    getHand():Card[] { return this.hand}
+    getHand():Card[] { return this.hand};
     getHandValue(): number {
         //console.log(`${this.name} calculating hand`);
         let handValue = 0;
@@ -188,5 +188,39 @@ export class AllAcesDeck extends Deck {
         console.log()
         this.cards = new Array(52);
         this.cards.fill(new Card(Suits.spades, Ranks.Ace));
+    }
+}
+
+export class PlayerActor implements PlayerActor {
+    player:Player;
+    deck:Deck;
+    riskiness:number;
+    // Value at which actor will take a hit action
+    // .78 = 16, .82 = 17, .89 = 19
+    
+    constructor(player:Player, deck:Deck) {
+        this.player = player;
+        this.deck = deck;
+        this.riskiness = .78 //~16
+    }
+
+    act():void {
+        if (this.player.getHandValue() < (Math.floor(21 * this.riskiness))) {
+            const cardDrawn = this.deck.draw();
+            if (cardDrawn != undefined) {
+                this.player.takeHit(cardDrawn);
+            }
+        }
+    }
+}
+
+export class Dealer extends PlayerActor {
+    act():void {
+        if (this.player.getHandValue() < 17) {
+            const cardDrawn = this.deck.draw();
+            if (cardDrawn != undefined) {
+                this.player.takeHit(cardDrawn);
+            }
+        }
     }
 }
