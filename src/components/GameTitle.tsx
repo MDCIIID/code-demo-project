@@ -9,9 +9,10 @@ export const GameTitle = (props:GameContainerProperties) => {
     console.log('title props: ', props);
 
     return (
-    <div className="game-title">
+    <div className="game-title"
+         data-testid="gameTitle">
         {Array.from(props.title).map((letter, index)=>{
-            return <div className="title-letter" key={`${letter+index}`}>{letter}</div>
+            return <div className="title-letter" key={`${letter+index}`} data-testid="titleLetter">{letter}</div>
         })}
     </div>);
 }
