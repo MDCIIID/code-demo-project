@@ -7,7 +7,8 @@ When the page loads, clicking start will initiate a game and randomly select an 
 * The dealer hand will be controlled by a `Dealer`, which is a `PlayerActor` which will have an unchanging set of action thresholds.
 
 * While relatively new to `TypeScript` I attempted to make as much use as I could of interfaces and typing to ensure the type safety to facilitate  
-* I didn't want to take a run of the mill black jack game, so rather than following a tutorial I coded up the logic and added a small twist. Rather than having a single player versus a dealer, I added a hardcoded array of players, and all that aren't the player are controlled by an actor.
+* I didn't want to take a run of the mill black jack game tutorial, so rather than following a tutorial I coded up the logic and added a small twist.Rather than having a single player versus a dealer, I added a hardcoded array of players, and all that aren't the player are controlled by an actor.
+   * In hindsight I could have had a more completed project doing so, and made small tweaks, but I felt this was a better learning opportunity to work on improving with typescript.  
 * There are multiple debugging buttons in the interface which can be toggled to show by setting the debug value to true in `GameContainer`.
 * Console logs are still in place as I am working on a re-render bug.
 
