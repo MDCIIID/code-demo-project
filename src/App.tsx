@@ -3,6 +3,8 @@ import logo from './logo.svg';
 import './App.css';
 import { GameContainer } from './components/GameContainer';
 import { GameTitle } from './components/GameTitle';
+import { QuickQuote } from './components/QuickQuote';
+import './components/QuickQuote';
 
 function App() {
   return (
@@ -14,14 +16,7 @@ function App() {
         <GameContainer
           playerNames={["Eric", "Cheryl", "Bret", "Bob"]}
          />
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <QuickQuote />
       </header>
     </div>
   );

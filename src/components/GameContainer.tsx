@@ -171,15 +171,10 @@ export const GameContainer = (props:GameContainerProperties) => {
                         presentPlayer = newPlayerState.getName().toLowerCase() === 'dealer' ?
                             new PlayerActor(newPlayerState, deck)
                             : new Dealer(newPlayerState, deck);
-                        if (newPlayerState.isBust()) {
+                        if (newPlayerState.inTerminalState()) {
                             continue;
                         }
-                        if (newPlayerState.hasStood()) {
-                            continue;
-                        }
-                        if (newPlayerState.hasBlackjack())  {
-                            continue;
-                        }
+
                         presentPlayer.act();
                     }
                     newPlayersState[i] = newPlayerState;
