@@ -3,17 +3,18 @@ import { Suits, Ranks, RankData } from '../constants/Constants';
 export class Player implements Player {
     name: string ='';
     hand: Card[];
+    handValue:number = 0
     isStanding: boolean = false;
     blackjack: boolean = false;
     wentBust: boolean = false;
-    getName: Function;
+
     constructor(name:string) {
         this.name = name;
         this.hand = [];
         this.isStanding = false;
-        this.getName = () => { return this.name; };
     }
 
+    getName = () => { return this.name; };
     getHand():Card[] { return this.hand};
     getHandValue(): number {
         //console.log(`${this.name} calculating hand`);
@@ -57,17 +58,31 @@ export class Player implements Player {
     }
     hasStood():boolean {return this.isStanding}
     takeStand():void {
-        console.log("I'm Standing!")
+        console.log(`${this.getName()} Standing on ${this.getHandValue()}!`)
         this.isStanding = true;
     }
     takeHit(card:Card): void {
-        //console.log("Hit me!");
         this.hand.push(card);
+        this.getHandValue();
     }
     isDealer():boolean {return this.name.toLocaleLowerCase() === 'dealer'}
 
-    isBust():boolean { return this.getHandValue() > 21}
+    isBust():boolean { return this.wentBust }
+    toggleBust():void { this.wentBust = !this.wentBust}
     hasBlackjack():boolean { return this.blackjack }
+    inTerminalState():boolean {
+        return this.isBust()
+        || this.hasStood()
+        || this.hasBlackjack()
+    }
+
+    showHand():void {
+        this.hand.forEach(card => {
+            if (!card.isFaceUp()) {
+                card.flip();
+            }
+        })
+    }
 }
 
 export class PlayerRoster {
@@ -98,15 +113,10 @@ export class Card implements Card {
     }
 
     getRank(): Ranks { return this.rank}
-
     getSuit(): Suits { return this.suit}
-
     flip(): void { this.faceUp = !this.faceUp }
-
     isFaceUp(): boolean { return this.faceUp; }
-
     isAce(): boolean { return this.rank === Ranks.Ace; }
-
     toString(): string { return "card string:" + this.getRank() + this.getSuit()}
 }
 
@@ -194,27 +204,40 @@ export class AllAcesDeck extends Deck {
 export class PlayerActor implements PlayerActor {
     player:Player;
     deck:Deck;
-    riskiness:number;
-    // Value at which actor will take a hit action
-    // .78 = 16, .82 = 17, .89 = 19
+    hitLimit:number; // Upper limit at which actor will take a hit action
     
     constructor(player:Player, deck:Deck) {
         this.player = player;
         this.deck = deck;
-        this.riskiness = .78 //~16
+        this.hitLimit = 16//Default 1 lower than dealer
+    }
+
+    adjustThreshold(value:number) {
+        this.hitLimit = this.hitLimit + value;
     }
 
     act():void {
-        if (this.player.getHandValue() < (Math.floor(21 * this.riskiness))) {
+        let handValue = this.player.getHandValue();
+        if (handValue < this.hitLimit && handValue < 21) {
             const cardDrawn = this.deck.draw();
             if (cardDrawn != undefined) {
+                cardDrawn.flip();
                 this.player.takeHit(cardDrawn);
             }
+            handValue = this.player.getHandValue();
+        } else if (this.player.getHandValue() > 21) {
+            this.player.toggleBust();
+        } else {
+            this.player.takeStand();
         }
+
     }
 }
 
 export class Dealer extends PlayerActor {
+    // Dealer cannot adjust
+    adjustThreshold(value: number): void {}
+
     act():void {
         if (this.player.getHandValue() < 17) {
             const cardDrawn = this.deck.draw();

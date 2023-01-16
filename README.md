@@ -1,4 +1,10 @@
-# Getting Started with Create React App
+## Blackjack Demo Project
+This is a basic blackjack demo project using a combination of React, Javascript and Typescript.
+When the page loads, clicking start will initiate a game and randomly select an available player that is not the dealer for the viewer to take actions on behalf of.
+
+* Other players will have their hands controlled by a `PlayerActor` that will determine when to hit or stand.
+    * One stretch goal was to allow the players to adjust their hit threshold based on visible cards in play. Currently not implemented.
+* The dealer hand will be controlled by a `Dealer`, which is a `PlayerActor`.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
