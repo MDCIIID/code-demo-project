@@ -2,16 +2,22 @@
 This is a basic blackjack demo project using a combination of React, Javascript and Typescript.
 When the page loads, clicking start will initiate a game and randomly select an available player that is not the dealer for the viewer to take actions on behalf of.
 
+### Added notes
 * Other players will have their hands controlled by a `PlayerActor` that will determine when to hit or stand.
-    * One stretch goal was to allow the players to adjust their hit threshold based on visible cards in play. Currently not implemented.
-* The dealer hand will be controlled by a `Dealer`, which is a `PlayerActor` which will have an unchanging set of action thresholds.
+    * [_] Allow the players to adjust their hit threshold based on visible cards in play.
 
-* While relatively new to `TypeScript` I attempted to make as much use as I could of interfaces and typing to ensure the type safety to facilitate  
+* The dealer hand will be controlled by a `Dealer`, which is a `PlayerActor` with an unchanging set of action thresholds.
+
+* While relatively new to `TypeScript` I attempted to make as much use as I could of interfaces and typing to ensure the type safety to facilitate confidence in program flow. 
 * I didn't want to take a run of the mill black jack game tutorial, so rather than following a tutorial I coded up the logic and added a small twist.Rather than having a single player versus a dealer, I added a hardcoded array of players, and all that aren't the player are controlled by an actor.
-   * In hindsight I could have had a more completed project doing so, and made small tweaks, but I felt this was a better learning opportunity to work on improving with typescript.  
+   * In hindsight I could have had a more completed project doing so, and made small tweaks, but I decided this approach was a better learning opportunity to work on improving with typescript and building understanding through application.
+  
 * There are multiple debugging buttons in the interface which can be toggled to show by setting the debug value to true in `GameContainer`.
+  
 * Console logs are still in place as I am working on a re-render bug.
-* Testing is presently failing due to a double render of a component, focused on completing logic and game loop.
+
+### Testing
+* Testing is functioning, but minimal
 
 
 

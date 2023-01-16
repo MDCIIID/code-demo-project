@@ -23,7 +23,7 @@ export const QuickQuote = (props:any) => {
 
 	return (
 		<div className="quote-body">
-		<div className="quote-text">❝{text}❞<span className="author-text"> -{author}</span></div>
+		<div className="quote-text">❝{text}❞<br /><span className="author-text"> -{author}</span></div>
 		</div>
 	)
 };

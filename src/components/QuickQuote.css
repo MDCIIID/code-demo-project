@@ -1,11 +1,14 @@
 .quote-text {
 	font-size: 18pt;
 	font-family: 'Times New Roman', Times, serif;
+
 }
 
 .author-text {
 	font-size: 14pt;
 	font-family: 'Times New Roman', Times, serif;
+	font-weight: 400;
+	color: rgba(255, 255, 255, 0.7)
 }
 
 .quote-body {
