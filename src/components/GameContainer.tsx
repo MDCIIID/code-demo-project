@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import { PlayerContainer } from './PlayerContainer';
-import { Deck, Player, Card, PlayerRoster, SuperRandomDeck, AllAcesDeck, PlayerActor} from '../classes/GameClasses';
+import { Deck, Player, Card, PlayerRoster, SuperRandomDeck, PlayerActor, Dealer} from '../classes/GameClasses';
 import './GameContainer.css';
 import { RankData } from '../constants/Constants';
-import { getActiveElement } from '@testing-library/user-event/dist/utils';
 
 export interface GameContainerProperties {
     playerNames: string[];
@@ -168,7 +167,10 @@ export const GameContainer = (props:GameContainerProperties) => {
                 } else {
                     console.log("running through play order");
                     if (playersInPlay && inProgress && !gameIsOver) {
-                        const presentPlayer:PlayerActor = new PlayerActor(newPlayerState, deck);
+                        let presentPlayer:PlayerActor;
+                        presentPlayer = newPlayerState.getName().toLowerCase() === 'dealer' ?
+                            new PlayerActor(newPlayerState, deck)
+                            : new Dealer(newPlayerState, deck);
                         if (newPlayerState.isBust()) {
                             continue;
                         }
@@ -223,7 +225,7 @@ export const GameContainer = (props:GameContainerProperties) => {
     <div className="main-div">
         {gameState.players && !gameState.gameIsOver && renderPlayerContainers()}
         {gameState.gameIsOver && renderGameOutcome()}
-        {!gameState.inProgress && <div> No game in progress </div>}
+        {!gameState.inProgress && <div> No game in progress, click start below to initiate. </div>}
     </div>
     {playerNames && <button className="start-button" onClick={() => {startGame()}}>START</button>}
     {gameState.inProgress && <button className="end-button" onClick={() => endGame()}>END</button>}

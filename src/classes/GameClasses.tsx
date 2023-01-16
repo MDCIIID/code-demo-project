@@ -217,6 +217,7 @@ export class PlayerActor implements PlayerActor {
     }
 
     act():void {
+        console.log("Player acting");
         let handValue = this.player.getHandValue();
         if (handValue < this.hitLimit && handValue < 21) {
             const cardDrawn = this.deck.draw();
@@ -239,6 +240,7 @@ export class Dealer extends PlayerActor {
     adjustThreshold(value: number): void {}
 
     act():void {
+        console.log("Dealer acting");
         if (this.player.getHandValue() < 17) {
             const cardDrawn = this.deck.draw();
             if (cardDrawn != undefined) {

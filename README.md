@@ -4,7 +4,14 @@ When the page loads, clicking start will initiate a game and randomly select an 
 
 * Other players will have their hands controlled by a `PlayerActor` that will determine when to hit or stand.
     * One stretch goal was to allow the players to adjust their hit threshold based on visible cards in play. Currently not implemented.
-* The dealer hand will be controlled by a `Dealer`, which is a `PlayerActor`.
+* The dealer hand will be controlled by a `Dealer`, which is a `PlayerActor` which will have an unchanging set of action thresholds.
+
+* While relatively new to `TypeScript` I attempted to make as much use as I could of interfaces and typing to ensure the type safety to facilitate  
+* I didn't want to take a run of the mill black jack game, so rather than following a tutorial I coded up the logic and added a small twist. Rather than having a single player versus a dealer, I added a hardcoded array of players, and all that aren't the player are controlled by an actor.
+* There are multiple debugging buttons in the interface which can be toggled to show by setting the debug value to true in `GameContainer`.
+* Console logs are still in place as I am working on a re-render bug.
+
+
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
