@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { PlayerContainer } from './PlayerContainer';
-import { Deck, Player, Card, PlayerRoster, SuperRandomDeck, AllAcesDeck} from '../classes/GameClasses';
+import { Deck, Player, Card, PlayerRoster, SuperRandomDeck, AllAcesDeck, PlayerActor} from '../classes/GameClasses';
 import './GameContainer.css';
 import { RankData } from '../constants/Constants';
+import { getActiveElement } from '@testing-library/user-event/dist/utils';
 
 export interface GameContainerProperties {
     playerNames: string[];
@@ -11,7 +12,8 @@ export interface GameContainerProperties {
 export interface GameContainerState {
     players: Player[],
     deck: Card[],
-    gameIsOver: boolean,
+    inProgress: boolean,
+    gameIsOver:boolean,
     viewer: Player
 }
 
@@ -19,23 +21,32 @@ const INITIAL_GAME_STATE = {
     players: new Array<Player>(),
     deck: new Deck(),
     inProgress: false,
+    gameIsOver: false,
     viewer: new Player("Default")
 }
 
 export const GameContainer = (props:GameContainerProperties) => {
     const [gameState, setGameState] = useState(INITIAL_GAME_STATE);
-    const debug = true;
+    const debug = false;
     const {playerNames} = props;
 
     useEffect(()=>{
-        gameLoop();
+        console.log("game state: ", gameState)
+        if (!gameState.gameIsOver){
+            gameLoop(); 
+        } else {
+            const { players } = gameState;
+            players.forEach(player => {
+                player.showHand();
+            })
+        }
     }, [gameState]);
 
     const startGame = () => {
         let players:Player[] = new PlayerRoster(playerNames).init();
         players.push(new Player("Dealer"));
         let gameDeck:Deck = Math.random() > .5 ? new SuperRandomDeck() : new Deck();
-        const selectionIndex:number = Math.floor(Math.random() * playerNames.length);
+        const selectionIndex:number = Math.ceil(Math.random() * playerNames.length-1);
         let selectedViewer:Player = players[selectionIndex];
         console.log('selection index: ', selectionIndex);
         
@@ -82,17 +93,24 @@ export const GameContainer = (props:GameContainerProperties) => {
     const hitPlayerAtPosition = (position:number):void => {
         let newPlayersState:Player[] = Object.assign([], gameState.players)
         let newDeckState:Deck = gameState.deck;
+        const playerInTerminalState = newPlayersState[position].hasStood()
+                                      || newPlayersState[position].isBust()
+                                      || newPlayersState[position].hasBlackjack();
         console.log(`hitting player at position ${position}`);
 
-        if (playerPositionIsValid(position) && playerNotBusted(newPlayersState[position])) {
-            const drawnCard = newDeckState.draw();
-            if (drawnCard) {
-                drawnCard.flip();
-                newPlayersState[position].takeHit(drawnCard);
-                setGameState({...gameState, deck: newDeckState, players: newPlayersState})
+        if (playerInTerminalState) {
+            alert("That player cannot take a card.");
+        } 
+            else 
+        {
+            if (playerPositionIsValid(position)) {
+                const drawnCard = newDeckState.draw();
+                if (drawnCard) {
+                    drawnCard.flip();
+                    newPlayersState[position].takeHit(drawnCard);
+                    setGameState({...gameState, deck: newDeckState, players: newPlayersState})
+                }
             }
-        } else {
-            throw new Error("Invalid player position, cannot hit");
         }
     }
 
@@ -112,10 +130,6 @@ export const GameContainer = (props:GameContainerProperties) => {
         return gameState.players[position] !== undefined;
     }
 
-    const playerNotBusted = (player:Player):boolean => {
-        return player.getHandValue() <= 21;
-    }
-
     const calculateHand = (hand:Card[]):void => {
         let handValue = 0;
         let aceInHand:Card[] = hand.filter((card)=>{return card.isAce()})
@@ -131,33 +145,85 @@ export const GameContainer = (props:GameContainerProperties) => {
     }
 
     const gameLoop = () => {
-        console.log('running game loop: ', gameState);
-        const playersInPlay = gameState.players.filter(player => player.hasStood);
-        if (playersInPlay.length) {
-            console.log('still players in play: ', playersInPlay);
+        const {deck, players, inProgress, gameIsOver, viewer} = gameState;
+        console.log('running game loop: ', {deck, players, inProgress, gameIsOver, viewer});
+
+        if (!gameIsOver && inProgress) {
+            let playersInPlay:Player[] = gameState.players.filter(player => !player.isBust() && !player.hasStood() && !player.hasBlackjack());
+            console.log('game\'s still going');
+            if (playersInPlay.length === 0) {
+                setGameState({...gameState, gameIsOver: true});
+            } else {
+                console.log('Players in play: ', playersInPlay);
+            }
+
+            for (let i = 0; i<players.length;i++) {
+                const newPlayerState:Player = players[i];
+                const newPlayersState:Player[] = [...players];
+                /*
+                get player
+                */
+                if (viewer === newPlayerState && !newPlayerState.inTerminalState()) {
+                    break;
+                } else {
+                    console.log("running through play order");
+                    if (playersInPlay && inProgress && !gameIsOver) {
+                        const presentPlayer:PlayerActor = new PlayerActor(newPlayerState, deck);
+                        if (newPlayerState.isBust()) {
+                            continue;
+                        }
+                        if (newPlayerState.hasStood()) {
+                            continue;
+                        }
+                        if (newPlayerState.hasBlackjack())  {
+                            continue;
+                        }
+                        presentPlayer.act();
+                    }
+                    newPlayersState[i] = newPlayerState;
+                    setGameState({...gameState, players: newPlayersState})
+                }
+                
+            };
+
         }
     }
     
-const renderPlayerContainers = () => {
-    return gameState.players.map((player, index) => {
-        //console.log('making player: \nname: ', player, `\nplayer #:${index}`);
-        return <PlayerContainer
-            player={player}
-            index={index}
-            hit={() => {hitPlayerAtPosition(index)}}
-            stand={() => {standPlayerAtPosition(index)}}
-            calculateHand={() => {player.getHandValue()}}
-            isSelected={isViewer(player)}
-        />
-    })
-}
+    const renderPlayerContainers = () => {
+        return gameState.players.map((player, index) => {
+            //console.log('making player: \nname: ', player, `\nplayer #:${index}`);
+            return <PlayerContainer
+                player={player}
+                index={index}
+                hit={() => {hitPlayerAtPosition(index)}}
+                stand={() => {standPlayerAtPosition(index)}}
+                calculateHand={() => {player.getHandValue()}}
+                isSelected={isViewer(player)}
+            />
+        })
+    }
+
+    const renderGameOutcome = () => {
+        const { players } = gameState;
+        console.log('rendering outcome: ', gameState);
+        return (
+            <>
+            {players.map((player, index) => {
+                <div key={`${index}-${player.getName()}`}>{`${player.getName()}: ${player.getHandValue()}`}</div>
+            })} 
+            </>
+        )       
+    }
 
     //TODO: Deal with splitting hands?
-
+    const dealer:Player = gameState.players.filter(player => player.getName().toLowerCase() === 'dealer')[0];
+    console.log("returning component");
     return (
     <div>
     <div className="main-div">
-        {gameState.players && renderPlayerContainers()}
+        {gameState.players && !gameState.gameIsOver && renderPlayerContainers()}
+        {gameState.gameIsOver && renderGameOutcome()}
+        {!gameState.inProgress && <div> No game in progress </div>}
     </div>
     {playerNames && <button className="start-button" onClick={() => {startGame()}}>START</button>}
     {gameState.inProgress && <button className="end-button" onClick={() => endGame()}>END</button>}
@@ -169,9 +235,9 @@ const renderPlayerContainers = () => {
     </div>}
     {debug &&
     <div>
-    <button className="debug-button" onClick={() => hitPlayerAtPosition(0)}>hitDealer</button>
-    <button className="debug-button" onClick={() => standPlayerAtPosition(0)}>standDealer</button>
-    <button className="debug-button" onClick={() => gameState.players[0].getHandValue()}>D.Hand</button>
+    <button className="debug-button" onClick={() => hitPlayerAtPosition(gameState.players.length-1)}>hitDealer</button>
+    <button className="debug-button" onClick={() => standPlayerAtPosition(gameState.players.length-1)}>standDealer</button>
+    <button className="debug-button" onClick={() => dealer.getHandValue()}>D.Hand</button>
     </div>}
     {debug &&
     <div>

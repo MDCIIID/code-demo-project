@@ -12,7 +12,7 @@ function App() {
           title={"Black Jack"}
         />
         <GameContainer
-          playerNames={["Eric", "Cheryl", "Barry"]}
+          playerNames={["Eric", "Cheryl"]}
          />
         <a
           className="App-link"
